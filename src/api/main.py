@@ -12,9 +12,14 @@ async def lifespan(app: FastAPI):
     # Startup
     await init_db()
     # Start MQTT listener in background
-    asyncio.create_task(mqtt_listener())
+    listener = asyncio.create_task(mqtt_listener())
     yield
-    # Shutdown (cleanup if needed)
+    # Shutdown
+    listener.cancel()
+    try:
+        await listener
+    except asyncio.CancelledError:
+        pass
 
 app = FastAPI(
     title="Smart Meter Platform",
