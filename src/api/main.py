@@ -5,6 +5,7 @@ from typing import List, Optional
 from src.utils.db import get_db_pool, init_db
 from src.ingestion.mqtt_client import mqtt_listener
 from src.models.meter_reading import MeterReading
+from src.api.meters import router as meters_router
 import asyncio
 
 @asynccontextmanager
@@ -27,6 +28,8 @@ app = FastAPI(
     version="0.1.0",
     lifespan=lifespan
 )
+
+app.include_router(meters_router)
 
 @app.get("/health")
 async def health():
