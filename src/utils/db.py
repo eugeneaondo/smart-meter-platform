@@ -34,6 +34,18 @@ async def init_db():
                                      migrate_data => TRUE);
         """)
         
+        # Registry of known meters
+        await conn.execute("""
+            CREATE TABLE IF NOT EXISTS meters (
+                device_id TEXT PRIMARY KEY,
+                name TEXT,
+                location TEXT,
+                meter_type TEXT,
+                installed_at TIMESTAMPTZ,
+                created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+            );
+        """)
+
         # Index for device lookups
         await conn.execute("""
             CREATE INDEX IF NOT EXISTS idx_device_time 
